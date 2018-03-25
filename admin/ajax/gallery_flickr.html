@@ -1,0 +1,41 @@
+<div class="row">
+  <div class="col-xs-12">
+    <div class="box">
+      <div id="box-one-content">
+        <div class="container">
+          <div class="row">
+            
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Image</th>
+                  <th>Category</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="allWorks">
+                <!-- placeholder -->
+              </tbody>
+            </table>
+            
+          </div>
+        </div>
+      </div>	
+    </div>
+  </div>
+</div>
+
+<script>
+  $(document).ready(function () {
+    // Add class for fullscreen content
+    $('#content').addClass('full-content');
+    
+    $.ajax({
+      url: "getImages.php?cat=all",
+      success: function (data) {
+        $('#allWorks').html(data);
+      }
+    })
+    
+  });
+</script>
