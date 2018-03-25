@@ -32,4 +32,5 @@ while ($row = mysqli_fetch_array($result_nup)) {
   }
   $i++;
 }
+
 echo json_encode($data);
