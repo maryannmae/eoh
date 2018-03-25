@@ -6,6 +6,7 @@ $data = array();
 $i = 0;
 $result = mysqli_query($conn, "select * from events");
 while ($row = mysqli_fetch_array($result)) {
+  $data[$i]['bookedby'] = $row['user_email'];
   $data[$i]['id'] = $row['id'];
   $data[$i]['for'] = $row['datetime_from_nup'] != '' ? $row['datetime_from_nup'] : '';
   $data[$i]['title'] = $row['category'];
@@ -20,6 +21,7 @@ while ($row = mysqli_fetch_array($result)) {
 }
 $result_nup = mysqli_query($conn, "select * from events where datetime_from_nup != ''");
 while ($row = mysqli_fetch_array($result_nup)) {
+  $data[$i]['bookedby'] = $row['user_email'];
   $data[$i]['id'] = $row['id'];
   $data[$i]['for'] = $row['datetime_from'] != '' ? $row['datetime_from'] : '';
   $data[$i]['title'] = "Nuptial";

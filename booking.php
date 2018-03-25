@@ -139,9 +139,9 @@ if (isset($_POST['submit'])) {
                 </div>
               </div>
               
-              <div class="form-group col-md-3">
+              <div class="form-group col-md-6">
                 <label class="control-label">Additional items</label>
-                <textarea class="form-control" name="add_item" placeholder="Add additional item ..." style="width:400px;height:210px"></textarea>
+                <textarea class="form-control" name="add_item" placeholder="Add additional item ..." rows="10"></textarea>
               </div>
 
             </div>

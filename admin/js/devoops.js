@@ -3274,8 +3274,9 @@ function DrawCalendar(){
       var tmpl = $('#view_tmpl').html();
       var data = {
         id: calEvent.id,
-        for: calEvent.for,
-        title: calEvent.title,
+        for: calEvent.title == 'Weddings' ? 'For Nuptial date: '+$.format.date(new Date(calEvent.for),'MMM d, yyyy h:mm a') : calEvent.title == 'Nuptial' ? 'For Wedding date: '+$.format.date(new Date(calEvent.for),'MMM d, yyyy h:mm a') : '',
+				title: calEvent.title,
+				bookedby: calEvent.bookedby,
         desc: calEvent.description,
         start: $.format.date(new Date(calEvent.start._i),'MMM d, yyyy h:mm a'),
         end: $.format.date(new Date(calEvent.end._i),'MMM d, yyyy h:mm a')
@@ -3308,10 +3309,53 @@ function DrawCalendar(){
 				CloseModalBox();
 			});
 			$('#event_change').on('click', function(){
-				calEvent.title = $('#newevent_name').val();
-				calEvent.description = $('#newevent_desc').val();
-				calendar.fullCalendar('updateEvent', calEvent);
-				CloseModalBox()
+				let data = {
+					id: $('#newevent_id').val(),
+					date_from: $('#date_from').val(),
+					date_to: $('#date_to').val(),
+					event_name: $('#newevent_name').val(),
+					desc: $('#newevent_desc').val()
+				}
+				$.post('check_changed.php',data,function(data_check){
+					if (data_check == 'CHANGED') {
+						$.post('check_duplicate_date.php',data,function(data_duplicate){
+							if (data_duplicate == 'NOT DUPLICATE') {
+								$.post('update_event.php?id='+$('#newevent_id').val()+'&update',data,function(data_update){
+									if (data_update == 'SUCCESS') {
+										alert('Successfully updated the event');
+										calendar.fullCalendar('updateEvent', calEvent);
+										CloseModalBox();
+									} else {
+										alert(data_update);
+									}
+								});
+							} else if (data_duplicate == 'DUPLICATE') {
+								alert('The selected dates are already occupied. Please choose another date or time.');
+							} else {
+								alert(data_duplicate);
+							}
+						});
+					} else if (data_check == 'NOT CHANGED') {
+						alert('No changes have been made');
+					} else {
+						alert(data_check);
+					}
+				})
+				// let id = $('#newevent_id').val();
+				// let ev_name = $('#newevent_name').val();
+				// let desc = $('#newevent_desc').val();
+				// if (ev_name == "Weddings") {
+
+				// } else if (ev_name == "Nuptial") {
+
+				// } else {
+
+				// }
+
+				// calEvent.title = $('#newevent_name').val();
+				// calEvent.description = $('#newevent_desc').val();
+				// calendar.fullCalendar('updateEvent', calEvent);
+				// CloseModalBox()
 			});
 		}
 		});
@@ -3502,7 +3546,7 @@ $(document).ready(function () {
     var msg = confirm('Are you sure you want to change the status of this event?')
     if (msg) {
       var id = $('#newevent_id').val()
-      $.get('update_event.php?id='+id,function(data){
+      $.get('update_event.php?status&id='+id,function(data){
         if (data == 'SUCCESS') {
           CloseModalBox()
           $('#booking-page').click()

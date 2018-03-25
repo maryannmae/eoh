@@ -2544,8 +2544,14 @@ shortcodes page css
   margin-left: 15px;
 }
 
+/* Custom CSS */
+
 #booking-container {
   padding: 20px 50px;
+}
+
+#formAddEvent {
+  font-size: 16px !important;
 }
 
 

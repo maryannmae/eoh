@@ -35,13 +35,17 @@
 <template id="view_tmpl">
   <form id="event_form">
     <div class="form-group has-success has-feedback">
-      <h3>{{for}}</h3>
-      <label>Event Name</label>
+      <h4>{{for}}</h4>
       <div>
         <input type="hidden" id="newevent_id" value="{{id}}">
       </div>
+      <label for="newevent_name">Event Name</label>
       <div>
-        <input type="text" id="newevent_name" value="{{title}}" class="form-control" placeholder="Name of event">
+        <input type="text" id="newevent_name" value="{{title}}" class="form-control" placeholder="Name of event" readonly>
+      </div>
+      <label for="newevent_bookedby">Booked by</label>
+      <div>
+        <input type="text" id="newevent_bookedby" value="{{bookedby}}" class="form-control" readonly>
       </div>
       <label>Description</label>
       <div>
