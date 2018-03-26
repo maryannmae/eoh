@@ -25,6 +25,7 @@ include '_includes/connection.php';
     <link href="css/datepicker3.css" rel="stylesheet">
     <link href="admin/plugins/fullcalendar/fullcalendar.css" rel="stylesheet">
     <link href="admin/css/bootstrap-datetimepicker.css" rel="stylesheet">
+    <link href="css/alertify.css" rel="stylesheet">
     <link href="css/main.css" rel="stylesheet">
     <!--[if lt IE 9]>
     <script src="js/html5shiv.js"></script>

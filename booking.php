@@ -83,7 +83,7 @@ if (isset($_POST['submit'])) {
     </div> <!-- col-lg-6 -->
   
     <div class="col-lg-6">
-      <form id="formAddEvent" method="post">
+      <form id="formAddEvent" method="post" action="booking.php">
 
         <div class="panel">
 
@@ -146,7 +146,7 @@ if (isset($_POST['submit'])) {
 
             </div>
             
-            <div id="other">
+            <div id="other_occasion">
               <div class="form-group col-md-4">
                 <label for="other" class="control-label">Other occasion name:</label>
                 <input id="other" class="form-control col-md-3" name="other" type="text" placeholder="Please specify ...">
@@ -208,7 +208,7 @@ if (isset($_POST['submit'])) {
             
             <div class="row col-md-12">
               <div class="form-group col-md-3">
-                <button type="submit" name="submit" class="btn btn-primary">Save event</button>
+                <button id="send-btn" type="submit" name="submit" class="btn btn-primary">Save event</button>
               </div>
             </div>
 

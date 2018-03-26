@@ -59,26 +59,40 @@ if (isset($_GET['logged_out'])) {
     <div class="container-fluid">
       <div id="page-login" class="row">
         <div class="col-xs-12 col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3">
-          <div class="text-right">
-            <a id="reg-link" href="register.php" class="txt-default">Need an account?</a>
-          </div>
           <div class="box">
             <div class="box-content">
-              <form method="post">
+              <form id="form_register" method="post">
                 <div class="text-center">
-                  <h3 class="page-header">Event Organization Hub by T-Reb Photography Login Page</h3>
+                  <h3 class="page-header">Event Organization Hub by T-Reb Photography Registration Page</h3>
+                </div>
+                <div class="form-group">
+                  <label class="control-label">Full name</label>
+                  <input type="text" class="form-control" name="full_name">
                 </div>
                 <div class="form-group">
                   <label class="control-label">E-mail</label>
-                  <input type="text" class="form-control" name="email" />
+                  <input type="text" class="form-control" name="email">
+                </div>
+                <div class="form-group">
+                  <label class="control-label">Address</label>
+                  <textarea class="form-control" name="address"></textarea>
+                </div>
+                <div class="form-group">
+                  <label class="control-label">Contact Number</label>
+                  <input type="text" class="form-control" name="cellnum">
                 </div>
                 <div class="form-group">
                   <label class="control-label">Password</label>
-                  <input type="password" class="form-control" name="password" />
+                  <input type="password" class="form-control" name="pass1">
+                </div>
+                <div class="form-group">
+                  <label class="control-label">Confirm Password</label>
+                  <input type="password" class="form-control" name="pass2">
                 </div>
                 <div class="text-center">
                   <a class="btn btn-primary" href="/">Back to home page</a>
-                  <button type="submit" name="login" class="btn btn-primary">Sign in</button>
+                  <a class="btn btn-primary" href="login.php">Back to login page</a>
+                  <button type="submit" name="register" class="btn btn-primary">Register</button>
                 </div>
               </form>
             </div>
@@ -86,6 +100,18 @@ if (isset($_GET['logged_out'])) {
         </div>
       </div>
     </div>
+    
+    <script src="js/jquery-3.3.1.js"></script>
+    <script src="admin/plugins/bootstrap/bootstrap.js"></script>
+    <script>
+      $('#form_register').on('submit',function(e){
+        let form_obj = $(this).serializeArray()
+        for (i=0;i<form_obj.length;i++) {
+          console.log('Name: '+form_obj[i].name+' Value: '+form_obj[i].value)
+        }
+        e.preventDefault()
+      })
+    </script>
   </body>
 </html>
 

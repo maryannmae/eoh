@@ -3316,6 +3316,11 @@ function DrawCalendar(){
 					event_name: $('#newevent_name').val(),
 					desc: $('#newevent_desc').val()
 				}
+				function getEvents() {
+					$.get('get_events.php',function(data1){
+						return data;
+					});
+				}
 				$.post('check_changed.php',data,function(data_check){
 					if (data_check == 'CHANGED') {
 						$.post('check_duplicate_date.php',data,function(data_duplicate){
@@ -3323,8 +3328,12 @@ function DrawCalendar(){
 								$.post('update_event.php?id='+$('#newevent_id').val()+'&update',data,function(data_update){
 									if (data_update == 'SUCCESS') {
 										alert('Successfully updated the event');
-										calendar.fullCalendar('updateEvent', calEvent);
-										CloseModalBox();
+										// CloseModalBox();
+										window.location.reload(true);
+										// window.location.href=window.location.href;
+										// location.href=location.href;
+										// calendar.fullCalendar('updateEvent',getEvents);
+										// console.log(window.location.href)
 									} else {
 										alert(data_update);
 									}

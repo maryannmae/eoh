@@ -38,57 +38,63 @@
 <script src="js/jquery.mask.js"></script>
 <!--<script src="js/jquery.prettyPhoto.js"></script>-->
 <script src="admin/js/bootstrap-datetimepicker.js"></script>
+<script src="js/alertify.js"></script>
 <script src="js/main.js"></script>
 <script>
   $(document).ready(function () {
-//    $('#formAddEvent').submit(function(e){
-//      var event_category = $('#event_category').val()
-//      var pkg = $('input[name="pkg"]:checked').val()
-//      var date_from = $('#date_from').val()
-//      var date_end = $('#date_end').val()
-//      var description = $('#desc').val() 
-//      
-//      var msg = "";
-//      if (
-//              event_category == '' ||
-//              date_from == '' ||
-//              date_end == '' ||
-//              description == ''
-//              ) {
-//        msg = "Please fiil-out all the fields";
-//      }
-//      
-//      if (msg == "") {
-//        var data = {
-//          date_from: date_from,
-//          date_to: date_end
-//        }
-//        $.post('check_duplicate_date.php',data,function(data){
-//          if (data == 'OCCUPIED') {
-//            alert("The selected dates are occupied.")
-//            e.preventDefault();
-//          } else if (data == 'NOT OCCUPIED') {
-//            $(this).submit();
-//          } else {
-//            console.log(data)
-//          }
-//        })
-//      } else {
-//        e.preventDefault();
-//        alert(msg);
-//      }
-//      
-//    })
+  
   });
 
   $(document).ready(function () {
+    let theForm = $('#formAddEvent')
+    theForm.on('submit',function(e){
+      // e.preventDefault()
+      let msg = ''
+      let ev_cat = $('#event_category').val()
+      let other = $('#other').val()
+      let date_from = $('#date_from').val()
+      let date_to = $('#date_end').val()
+      let date_from_nup = $('#date_from_nup').val()
+      let date_to_nup = $('#date_end_nup').val()
+      let date_from_wed = $('#date_from_wed').val()
+      let date_to_wed = $('#date_end_wed').val()
+      let desc = $('#desc').val()
+      if (ev_cat == 'Weddings') {
+
+      } else if (ev_cat == 'Other Occasions') {
+        if (other == '') {
+          msg += 'Please specify other occation name<br>'
+        }
+        if (date_from == '') {
+          msg += 'Please input date from<br>'
+        }
+        if (date_to == '') {
+          msg += 'Please input date to<br>'
+        }
+      } else {
+        if (date_from == '') {
+          msg += 'Please input date from<br>'
+        }
+        if (date_to == '') {
+          msg += 'Please input date to<br>'
+        }
+      }
+      if (msg == '') {
+        // Submit the form
+      } else {
+        e.preventDefault()
+        alertify.alert(msg)
+        $('.msg').css('color','red')
+        msg = ''
+      }
+    })
     
     var pkgs = $('#pkgs');
-    var other = $('#other');
+    var other_occasion = $('#other_occasion');
     var date_normal = $('#date_normal');
     var date_wedding = $('#date_wedding');
     pkgs.hide();
-    other.hide();
+    other_occasion.hide();
     date_wedding.hide();
 
     $('#full-calendar').fullCalendar({
@@ -195,17 +201,17 @@
       var category = $('#event_category').val();
       if (category == 'Weddings') {
         pkgs.show();
-        other.hide();
+        other_occasion.hide();
         date_wedding.show();
         date_normal.hide();
       } else if (category == 'Other Occasions') {
         pkgs.hide();
-        other.show();
+        other_occasion.show();
         date_wedding.hide();
         date_normal.show();
       } else {
         pkgs.hide();
-        other.hide();
+        other_occasion.hide();
         date_wedding.hide();
         date_normal.show();
       }
