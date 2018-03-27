@@ -59,7 +59,7 @@ include '_includes/connection.php';
                   </form>
                 </div>
                 <?php if (isset($_SESSION['user_email'])) { ?>
-                <a href="logout.php" class="btn btn-default btn-sm" style="margin-left: 10px">logout <?= $_SESSION['user_email'] ?></a>
+                <a href="logout.php" class="btn btn-default btn-sm" style="margin-left: 10px" title="LOGOUT"><i class="fa fa-sign-out"></i> <?= $_SESSION['full_name'] ?></a>
                 <?php } else { ?>
                 <a href="login.php" class="btn btn-default btn-sm" style="margin-left: 10px">login</a>
                 <?php } ?>
@@ -105,15 +105,9 @@ include '_includes/connection.php';
                <?php } ?>
               <?php if ($_SERVER['PHP_SELF'] == "/booking.php") { ?>
               <li class="active"><a href="booking.php"><em class="fa fa-calendar">&nbsp;</em> Booking</a></li>
-               <?php } else {
-                 if (isset($_SESSION['logged_in'])) {
-               ?>
+               <?php } else { ?>
               <li><a href="booking.php"><em class="fa fa-calendar">&nbsp;</em> Booking</a></li>
-               <?php 
-                    }
-               
-                 } 
-               ?>
+               <?php } ?>
                <?php if ($_SERVER['PHP_SELF'] == "/forum.php") { ?>
               <li class="active"><a href="forum.php"><em class="fa fa-comment">&nbsp;</em> Forum</a></li>
                <?php } else { ?>

@@ -6,10 +6,14 @@ if (isset($_POST['login'])) {
   $email = $_POST['email'];
   $password = $_POST['password'];
   
-  $result = mysqli_query($conn, "select * from users where email='".$email."' and password='".sha1($password)."'");
+  $result = mysqli_query($conn, "select * from users where email='".$email."' and password='".sha1($password)."' and status='CONFIRMED'");
   if ($row = mysqli_fetch_array($result)) {
     $_SESSION['logged_in'] = TRUE;
     $_SESSION['user_email'] = $row['email'];
+    $result_profile = mysqli_query($conn, "select full_name from profiles where email='".$email."'");
+    while ($row_profile = mysqli_fetch_array($result_profile)) {
+      $_SESSION['full_name'] = $row_profile['full_name'];
+    }
     $_SESSION['auth'] = $row['auth'];
     
     if ($row['auth'] == "0") {

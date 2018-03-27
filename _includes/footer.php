@@ -42,7 +42,32 @@
 <script src="js/main.js"></script>
 <script>
   $(document).ready(function () {
-  
+    <?php
+      if (!isset($_SESSION['logged_in']) && $_SERVER['PHP_SELF'] == '/booking.php') {  
+    ?>
+        alertify
+                .okBtn("Login")
+                .cancelBtn("Register")
+                .confirm("You must login first in order to view this page, create an account if you don\'t have one.", function () {
+            // user clicked "login"
+            window.location = 'login.php'
+        }, function() {
+            // user clicked "register"
+            window.location = 'register.php'
+        })
+        $('.alertify .dialog div').css({
+          'background':'#436E90'
+        })
+        $('.alertify .dialog div .msg').css({
+          'color':'#fff'
+        })
+        $('.alertify .dialog div nav button').css({
+          'color':'#fff',
+          'border':'1px solid rgba(0,0,0,0.2)'
+        })
+    <?php
+      }
+    ?>
   });
 
   $(document).ready(function () {

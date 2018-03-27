@@ -1,38 +1,6 @@
 <?php
 include './_includes/connection.php';
 
-
-if (isset($_POST['login'])) {
-  $email = $_POST['email'];
-  $password = $_POST['password'];
-  
-  $result = mysqli_query($conn, "select * from users where email='".$email."' and password='".sha1($password)."'");
-  if ($row = mysqli_fetch_array($result)) {
-    $_SESSION['logged_in'] = TRUE;
-    $_SESSION['user_email'] = $row['email'];
-    $_SESSION['auth'] = $row['auth'];
-    
-    if ($row['auth'] == "0") {
-      header("Location: admin/");
-      exit();
-    } else {
-      header("Location: /");
-      exit();
-    }
-    
-  } else {
-    echo '<script>alert("No user with that email or password is incorrect.")</script>';
-  }
-
-}
-
-if (isset($_GET['unauthorized'])) {
-  echo '<script>alert("You are not authorized!")</script>';
-}
-
-if (isset($_GET['logged_out'])) {
-  echo '<script>alert("You are now logged out.")</script>';
-}
 ?>
 
 <!DOCTYPE html>
@@ -43,6 +11,7 @@ if (isset($_GET['logged_out'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="admin/plugins/bootstrap/bootstrap.css" rel="stylesheet">
     <link href="admin/css/font-awesome.css" rel="stylesheet">
+    <link href="css/alertify.css" rel="stylesheet">
     <link href="admin/css/style_v1.css" rel="stylesheet">
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -52,6 +21,9 @@ if (isset($_GET['logged_out'])) {
     <style>
       #reg-link:hover {
         color: #fff;
+      }
+      .box {
+        z-index: 0;
       }
     </style>
   </head>
@@ -103,13 +75,54 @@ if (isset($_GET['logged_out'])) {
     
     <script src="js/jquery-3.3.1.js"></script>
     <script src="admin/plugins/bootstrap/bootstrap.js"></script>
+    <script src="js/alertify.js"></script>
+    <script src="js/jquery.mask.js"></script>
     <script>
       $('#form_register').on('submit',function(e){
         let form_obj = $(this).serializeArray()
-        for (i=0;i<form_obj.length;i++) {
-          console.log('Name: '+form_obj[i].name+' Value: '+form_obj[i].value)
+        let msg = ''
+        if (form_obj[0].value == '') {
+          msg += 'Please fill-in your name<br>'
+        }
+        if (form_obj[1].value == '') {
+          msg += 'Please fill-in your email<br>'
+        }
+        if (form_obj[2].value == '') {
+          msg += 'Please fill-in your address<br>'
+        }
+        if (form_obj[3].value == '') {
+          msg += 'Please fill-in your contact number<br>'
+        }
+        if (form_obj[4].value == '') {
+          msg += 'Please fill-in your password<br>'
+        }
+        if (form_obj[5].value == '') {
+          msg += 'Please confirm your password<br>'
+        }
+        if (form_obj[4].value != form_obj[5].value) {
+          msg += 'Passwords do not match<br>'
+        }
+        if (msg == '') {
+          let data = {
+            register: '',
+            hostname: '<?= $_SERVER['SERVER_NAME'] ?>',
+            full_name: form_obj[0].value,
+            email: form_obj[1].value,
+            address: form_obj[2].value,
+            cellnum: form_obj[3].value,
+            pass: form_obj[4].value
+          }
+          $.post('_includes/register_account.php',data,function(data){
+            console.log(data)
+          })
+        } else {
+          alertify.error(msg)
         }
         e.preventDefault()
+      })
+
+      $(document).ready(function(){
+        $('input[name="cellnum"]').mask('00000000000')
       })
     </script>
   </body>
