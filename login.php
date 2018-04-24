@@ -6,14 +6,11 @@ if (isset($_POST['login'])) {
   $email = $_POST['email'];
   $password = $_POST['password'];
   
-  $result = mysqli_query($conn, "select * from users where email='".$email."' and password='".sha1($password)."' and status='CONFIRMED'");
+  $result = mysqli_query($conn, "select * from users inner join profiles on users.email=profiles.email where users.email='".$email."' and users.password='".sha1($password)."' and profiles.status='CONFIRMED'");
   if ($row = mysqli_fetch_array($result)) {
     $_SESSION['logged_in'] = TRUE;
     $_SESSION['user_email'] = $row['email'];
-    $result_profile = mysqli_query($conn, "select full_name from profiles where email='".$email."'");
-    while ($row_profile = mysqli_fetch_array($result_profile)) {
-      $_SESSION['full_name'] = $row_profile['full_name'];
-    }
+    $_SESSION['full_name'] = $row['full_name'];
     $_SESSION['auth'] = $row['auth'];
     
     if ($row['auth'] == "0") {
@@ -25,7 +22,8 @@ if (isset($_POST['login'])) {
     }
     
   } else {
-    echo '<script>alert("No user with that email or password is incorrect.")</script>';
+    echo '<script>alert("No user with that email or password is incorrect or email is not confirmed.")</script>';
+    echo mysqli_error($conn);
   }
 
 }
@@ -63,9 +61,6 @@ if (isset($_GET['logged_out'])) {
     <div class="container-fluid">
       <div id="page-login" class="row">
         <div class="col-xs-12 col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3">
-          <div class="text-right">
-            <a id="reg-link" href="register.php" class="txt-default">Need an account?</a>
-          </div>
           <div class="box">
             <div class="box-content">
               <form method="post">
@@ -86,6 +81,11 @@ if (isset($_GET['logged_out'])) {
                 </div>
               </form>
             </div>
+          </div>
+          <div class="text-right">
+            <a id="reg-link" href="recover.php" class="txt-default">Forgot password?</a>
+            <span>&nbsp;&nbsp;&nbsp;</span>
+            <a id="reg-link" href="register.php" class="txt-default">Need an account?</a>
           </div>
         </div>
       </div>

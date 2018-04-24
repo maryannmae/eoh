@@ -113,7 +113,12 @@ include './_includes/connection.php';
             pass: form_obj[4].value
           }
           $.post('_includes/register_account.php',data,function(data){
-            console.log(data)
+            if (data == 'SUCCESS') {
+              alert('Successfully registered. Please confirm your email address to login')
+              window.location = 'register.php'
+            } else if (data == 'DUPLICATE') {
+              alertify.alert('Registration error. Email already registered')
+            }
           })
         } else {
           alertify.error(msg)

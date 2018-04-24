@@ -2550,11 +2550,9 @@ shortcodes page css
   padding: 20px 50px;
 }
 
-#formAddEvent {
-  font-size: 16px !important;
+label {
+  font-weight: normal;
 }
-
-
 
 
 

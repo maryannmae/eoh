@@ -104,9 +104,9 @@ include '_includes/connection.php';
               <li><a href="gallery.php"><em class="fa fa-dashboard">&nbsp;</em> Gallery</a></li>
                <?php } ?>
               <?php if ($_SERVER['PHP_SELF'] == "/booking.php") { ?>
-              <li class="active"><a href="booking.php"><em class="fa fa-calendar">&nbsp;</em> Booking</a></li>
+              <li class="active"><a id="booking-link" href="booking.php"><em class="fa fa-calendar">&nbsp;</em> Booking</a></li>
                <?php } else { ?>
-              <li><a href="booking.php"><em class="fa fa-calendar">&nbsp;</em> Booking</a></li>
+              <li><a id="booking-link" href="booking.php"><em class="fa fa-calendar">&nbsp;</em> Booking</a></li>
                <?php } ?>
                <?php if ($_SERVER['PHP_SELF'] == "/forum.php") { ?>
               <li class="active"><a href="forum.php"><em class="fa fa-comment">&nbsp;</em> Forum</a></li>

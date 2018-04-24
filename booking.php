@@ -2,224 +2,261 @@
 include '_includes/header.php';
 
 if (isset($_POST['submit'])) {
-  $user_email = $_SESSION['user_email'];
-  $category = $_POST['event_category'] == 'Other Occasions' ? $_POST['other'] == '' ? $_POST['event_category'] : $_POST['other'] : $_POST['event_category'];
-  $pkg = isset($_POST['pkg']) ? $_POST['pkg'] : NULL;
-  $add_item = isset($_POST['add_item']) ? $_POST['add_item'] : NULL;
-  $datetime_from_nup = $_POST['date_from_nup'] != '' ? date("Y-m-d H:i:s", strtotime($_POST['date_from_nup'])) : NULL;
-  $datetime_to_nup = $_POST['date_end_nup'] != '' ? date("Y-m-d H:i:s", strtotime($_POST['date_end_nup'])) : NULL;
-  $datetime_from = date("Y-m-d H:i:s", strtotime(ord($_POST['date_from_wed']) == 0 ? $_POST['date_from'] : $_POST['date_from_wed']));
-  $datetime_to = date("Y-m-d H:i:s", strtotime(ord($_POST['date_end_wed']) == 0 ? $_POST['date_end'] : $_POST['date_end_wed']));
-  $description = $_POST['desc'];
-  $result;
   
-  if ($datetime_from_nup != NULL) {
-    $result = mysqli_query($conn, "select * from events where datetime_from <= '{$datetime_to}' and datetime_to >= '{$datetime_from}'".
-                                  " or datetime_from_nup <= '{$datetime_to_nup}' and datetime_to_nup >= '{$datetime_from_nup}'".
-                                  " or datetime_from_nup <= '{$datetime_to}' and datetime_to_nup >= '{$datetime_from}'".
-                                  " or datetime_from <= '{$datetime_to_nup}' and datetime_to >= '{$datetime_from_nup}'");
-  } else {
-    $result = mysqli_query($conn, "select * from events where datetime_from <= '{$datetime_to}' and datetime_to >= '{$datetime_from}'".
-                                  " or datetime_from_nup <= '{$datetime_to}' and datetime_to_nup >= '{$datetime_from}'");
-  }
-
-  $occupied = FALSE;
-  while ($row = mysqli_fetch_array($result)) {
-    $occupied = TRUE;
-  }
-
-  if ($occupied) {
-    echo '<script>alert("The selected dates are already occupied. Please choose another date or time.")</script>';
-    echo '<script>window.location = "booking.php"</script>';
-  } elseif ($occupied == FALSE) {
-    if ($category == "Weddings") {
-      mysqli_query($conn, "insert into events (user_email,category,package,add_item,datetime_from_nup,datetime_to_nup,datetime_from,datetime_to,description) values ('".
-              $user_email."','".
-              $category."','".
-              $pkg."','".
-              $add_item."','".
-              $datetime_from_nup."','".
-              $datetime_to_nup."','".
-              $datetime_from."','".
-              $datetime_to."','".
-              $description."')"
-              );
-    } else {
-      mysqli_query($conn, "insert into events (user_email,category,package,add_item,datetime_from,datetime_to,description) values ('".
-              $user_email."','".
-              $category."','".
-              $pkg."','".
-              $add_item."','".
-              $datetime_from."','".
-              $datetime_to."','".
-              $description."')"
-              );
-    }
-    if (mysqli_affected_rows($conn) == 1) {
-      echo '<script>alert("Successfully added an event")</script>';
-    } else {
-      echo mysqli_error($conn);
-    }
-  } else {
-    echo mysqli_error($conn);
-  }
 
 }
 ?>
 
 <div id="booking-container" class="container-fluid">
-  <div class="row">
-    
-    <div class="col-lg-6">
-      <div class="panel">
-        <div class="panel-body">
-          <div id="full-calendar"></div>
-          <br>
-          <label>Legend: </label>
-          <small style="border-radius:5px;padding:5px;background:#3a87ad;color:#fff">Approved</small>
-          <small style="border-radius:5px;padding:5px;background:#e74c3c;color:#fff">Pending</small>
-        </div>
-      </div>
-    </div> <!-- col-lg-6 -->
-  
-    <div class="col-lg-6">
-      <form id="formAddEvent" method="post" action="booking.php">
-
+  <form id="formAddEvent" method="post" action="booking.php">
+    <div class="row">
+      
+      <div class="col-lg-6">
         <div class="panel">
-
           <div class="panel-body">
-            <div class="form-group col-md-3">
-              <label for="event_category" class="control-label">Event Category:</label>
-              <select id="event_category" class="form-control" name="event_category" required>
-                <option value=""></option>
-                <option value="Birthday">Birthday</option>
-                <option value="Burial">Burial</option>
-                <option value="Family Gatherings">Family Gatherings</option>
-                <option value="School Activities">School Activities</option>
-                <option value="Weddings">Weddings</option>
-                <option value="Other Occasions">Other Occasions</option>
-              </select>
+            <div id="full-calendar"></div>
+            <br>
+            <label>Legend: </label>
+            <small style="border-radius:5px;padding:5px;background:#3a87ad;color:#fff">Approved</small>
+            <small style="border-radius:5px;padding:5px;background:#e74c3c;color:#fff">Pending</small>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-body">
+            <h3>Links and Services</h3>
+            <div class="form-group col-md-3" style="border-right:1px solid #eee">
+              <label for="link_m"><input type="checkbox" name="link_m" id="link_m" value="Make-up Artists"> Make-up Artists</label>
+              <hr>
+              <label for="link_m_item1"><input type="radio" name="link_m_items" id="link_m_item1" value="Jerico Soriano" disabled> <a href="//fb.com/ceejay.soriano.1" target="_blank" title="Jerico Soriano">Jerico Soriano</a></label>
+              <label for="link_m_item2"><input type="radio" name="link_m_items" id="link_m_item2" value="Jhondel Mhark Maganda" disabled> <a href="//fb.com/jhondelmhark.maganda" target="_blank" title="Jhondel Mhark Maganda">Jhondel Mhark Maganda</a></label>
+              <label for="link_m_item3"><input type="radio" name="link_m_items" id="link_m_item3" value="Jhun Zalazar" disabled> <a href="//fb.com/sarazaru281989" target="_blank" title="Jhun Zalazar">Jhun Zalazar</a></label>
+              <label for="link_m_item4"><input type="radio" name="link_m_items" id="link_m_item4" value="Other" disabled> Other</label>
+              <input type="text" name="other_m" id="other_m" class="form-control" placeholder="Other supplier" disabled>
             </div>
+            <div class="form-group col-md-3" style="border-right:1px solid #eee">
+              <label for="link_c"><input type="checkbox" name="link_c" id="link_c" value="Catering Services"> Catering Services</label>
+              <hr>
+              <label for="link_c_item1"><input type="radio" name="link_c_items" id="link_c_item1" value="Buboy Evangelista" disabled> <a href="//fb.com/JericoBuboy20" target="_blank" title="Buboy Evangelista">Buboy Evangelista</a></label>
+              <label for="link_c_item2"><input type="radio" name="link_c_items" id="link_c_item2" value="WEDDING MASTER" disabled> <a href="//fb.com/ferdinand.jaravata.9" target="_blank" title="WEDDING MASTER">WEDDING MASTER</a></label>
+              <label for="link_c_item3"><input type="radio" name="link_c_items" id="link_c_item3" value="Other" disabled> Other</label>
+              <input type="text" name="other_c" id="other_c" class="form-control" placeholder="Other supplier" disabled>
+            </div>
+            <div class="form-group col-md-3" style="border-right:1px solid #eee">
+              <label for="link_s"><input type="checkbox" name="link_s" id="link_s" value="Sound Systems"> Sound Systems</label>
+              <hr>
+              <label for="link_s_item1"><input type="radio" name="link_s_items" id="link_s_item1" value="KDA  Light and Sound" disabled> <a href="//fb.com/djjerwin" target="_blank" title="KDA  Light and Sound">KDA  Light and Sound</a></label>
+              <label for="link_s_item2"><input type="radio" name="link_s_items" id="link_s_item2" value="Other" disabled> Other</label>
+              <input type="text" name="other_s" id="other_s" class="form-control" placeholder="Other supplier" disabled>
+            </div>
+            <div class="form-group col-md-3">
+              <label for="link_f"><input type="checkbox" name="link_f" id="link_f" value="Floral Services"> Floral Services &nbsp;&nbsp;&nbsp;&nbsp;</label>
+              <hr>
+              <label for="link_f_item1"><input type="radio" name="link_f_items" id="link_f_item1" value="Milanes Flowershop" disabled> <a href="//fb.com/sherryann.matining" target="_blank" title="Milanes Flowershop">Milanes Flowershop</a></label>
+              <label for="link_f_item2"><input type="radio" name="link_f_items" id="link_f_item2" value="Jane Abag Santos" disabled> <a href="//fb.com/jane.cantos1" target="_blank" title="Jane Abag Santos">Jane Abag Santos</a></label>
+              <label for="link_f_item3"><input type="radio" name="link_f_items" id="link_f_item3" value="Other" disabled> Other</label>
+              <input type="text" name="other_f" id="other_f" class="form-control" placeholder="Other supplier" disabled>
+            </div>
+          </div>
+        </div>
+      </div> <!-- col-lg-6 -->
+    
+      <div class="col-lg-6">
 
-            <div id="pkgs">
+          <div class="panel">
 
+            <div class="panel-body">
               <div class="form-group col-md-3">
-                <label class="control-label">Wedding Packages</label>
-                <div class="radio">
-                  <label>
-                    <input id="pkg1" type="radio" name="pkg" value="pkg1">
-                    Package 1
-                  </label>
-                  <br>
-                  <a href="#" data-toggle="modal" data-target="#modal_pkg1"><small>details</small></a>
+                <label for="event_category" class="control-label">Event Category:</label>
+                <select id="event_category" class="form-control" name="event_category" required>
+                  <option value=""></option>
+                  <option value="Birthday">Birthday</option>
+                  <option value="Burial">Burial</option>
+                  <option value="Family Gatherings">Family Gatherings</option>
+                  <option value="School Activities">School Activities</option>
+                  <option value="Weddings">Weddings</option>
+                  <option value="Other Occasions">Other Occasions</option>
+                </select>
+              </div>
+
+              <div id="pkgs">
+
+                <div class="form-group col-md-3">
+                  <label class="control-label">Wedding Packages</label>
+                  <div class="radio">
+                    <label>
+                      <input id="pkg1" type="radio" name="pkg" value="pkg1">
+                      Package 1
+                    </label>
+                    <br>
+                    <a href="#" data-toggle="modal" data-target="#modal_pkg1"><small>details</small></a>
+                  </div>
+                  <div class="radio">
+                    <label>
+                      <input id="pkg2" type="radio" name="pkg" value="pkg2">
+                      Package 2
+                    </label>
+                    <br>
+                    <a href="#" data-toggle="modal" data-target="#modal_pkg2"><small>details</small></a>
+                  </div>
+                  <div class="radio">
+                    <label>
+                      <input id="pkg3" type="radio" name="pkg" value="pkg3">
+                      Package 3
+                    </label>
+                    <br>
+                    <a href="#" data-toggle="modal" data-target="#modal_pkg3"><small>details</small></a>
+                  </div>
+                  <div class="radio">
+                    <label>
+                      <input id="pkg4" type="radio" name="pkg" value="pkg4">
+                      Package 4
+                    </label>
+                    <br>
+                    <a href="#" data-toggle="modal" data-target="#modal_pkg4"><small>details</small></a>
+                  </div>
                 </div>
-                <div class="radio">
-                  <label>
-                    <input id="pkg2" type="radio" name="pkg" value="pkg2">
-                    Package 2
-                  </label>
-                  <br>
-                   <a href="#" data-toggle="modal" data-target="#modal_pkg2"><small>details</small></a>
+                
+                <div class="form-group col-md-6">
+                  <label class="control-label">Additional items</label>
+                  <textarea class="form-control" name="add_item" placeholder="Add additional item ..." rows="10"></textarea>
                 </div>
-                <div class="radio">
-                  <label>
-                    <input id="pkg3" type="radio" name="pkg" value="pkg3">
-                    Package 3
-                  </label>
-                  <br>
-                   <a href="#" data-toggle="modal" data-target="#modal_pkg3"><small>details</small></a>
+
+              </div>
+              
+              <div id="other_occasion">
+                <div class="form-group col-md-4">
+                  <label for="other" class="control-label">Other occasion name:</label>
+                  <input id="other" class="form-control col-md-3" name="other" type="text" placeholder="Please specify ...">
                 </div>
-                <div class="radio">
-                  <label>
-                    <input id="pkg4" type="radio" name="pkg" value="pkg4">
-                    Package 4
-                  </label>
-                  <br>
-                   <a href="#" data-toggle="modal" data-target="#modal_pkg4"><small>details</small></a>
+              </div>
+
+              <div id="wedding-albums" class="row">
+                <div class="col-md-12">
+                  <label>Wedding Album Designs</label>
+                  <div class="row">
+                    <div class="form-group col-md-3">
+                      <label for="wed_album1"><input type="radio" name="wed_album" id="wed_album1" value="Design 1"> Design 1</label>
+                      <a href="images/wed_album1.png" rel="prettyPhoto"><img width="100" src="images/wed_album1.png" alt=""></a>
+                    </div>
+                    <div class="form-group col-md-3">
+                      <label for="wed_album2"><input type="radio" name="wed_album" id="wed_album2" value="Design 2"> Design 2</label>
+                      <a href="images/wed_album2.jpg" rel="prettyPhoto"><img width="100" src="images/wed_album2.jpg" alt=""></a>
+                    </div>
+                    <div class="form-group col-md-3">
+                      <label for="wed_album3"><input type="radio" name="wed_album" id="wed_album3" value="Design 3"> Design 3</label>
+                      <a href="images/wed_album3.jpg" rel="prettyPhoto"><img width="100" src="images/wed_album3.jpg" alt=""></a>
+                    </div>
+                    <div class="form-group col-md-3">
+                      <label for="wed_album4"><input type="radio" name="wed_album" id="wed_album4" value="Design 4"> Design 4</label>
+                      <a href="images/wed_album4.jpg" rel="prettyPhoto"><img width="100" src="images/wed_album4.jpg" alt=""></a>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="form-group col-md-12">
+                      <label for="wed_album5"><input type="radio" name="wed_album" id="wed_album5" value="Design 5"> Custom Album</label>
+                      <input type="text" name="wed_album5" id="wed_album5_text" class="form-control" placeholder="Paste link here" disabled>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div id="bday-albums" class="row">
+                <div class="col-md-12">
+                  <label>Birthday Album Designs</label>
+                  <div class="row">
+                    <div class="form-group col-md-3">
+                      <label for="bday_album1"><input type="radio" name="bday_album" id="bday_album1" value="Design 1"> Design 1</label>
+                      <a href="images/bday_album1.jpg" rel="prettyPhoto"><img width="100" src="images/bday_album1.jpg" alt=""></a>
+                    </div>
+                    <div class="form-group col-md-3">
+                      <label for="bday_album2"><input type="radio" name="bday_album" id="bday_album2" value="Design 2"> Design 2</label>
+                      <a href="images/bday_album2.jpg" rel="prettyPhoto"><img width="100" src="images/bday_album2.jpg" alt=""></a>
+                    </div>
+                    <div class="form-group col-md-3">
+                      <label for="bday_album3"><input type="radio" name="bday_album" id="bday_album3" value="Design 3"> Design 3</label>
+                      <a href="images/bday_album3.jpg" rel="prettyPhoto"><img width="100" src="images/bday_album3.jpg" alt=""></a>
+                    </div>
+                    <div class="form-group col-md-3">
+                      <label for="bday_album4"><input type="radio" name="bday_album" id="bday_album4" value="Design 4"> Design 4</label>
+                      <a href="images/bday_album4.jpg" rel="prettyPhoto"><img width="100" src="images/bday_album4.jpg" alt=""></a>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="form-group col-md-12">
+                      <label for="bday_album5"><input type="radio" name="bday_album" id="bday_album5" value="Design 5"> Custom Album</label>
+                      <input type="text" name="bday_album5" id="bday_album5_text" class="form-control" placeholder="Paste link here" disabled>
+                    </div>
+                  </div>
                 </div>
               </div>
               
-              <div class="form-group col-md-6">
-                <label class="control-label">Additional items</label>
-                <textarea class="form-control" name="add_item" placeholder="Add additional item ..." rows="10"></textarea>
+              <div id="date_normal" class="col-md-12">
+                <div class="row">
+                  <div class="form-group col-md-6">
+                    <label for="date_from" class="control-label">Select date and time from:</label>
+                    <input id="date_from" class="form-control col-md-3" name="date_from" type="text" readonly required>
+                  </div>
+                  <div class="form-group col-md-6">
+                    <label for="date_end" class="control-label">Select date and time to:</label>
+                    <input id="date_end" class="form-control col-md-3" name="date_end" type="text" readonly  required>
+                  </div>
+                </div>
+              </div>
+              
+              <div id="date_wedding" class="col-md-12">
+                <div class="row">
+                  <div class="col-md-6">
+                    <h3>Nuptial</h3>
+                  </div>
+                  <div class="col-md-6">
+                    <h3>Wedding</h3>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="date_from_nup" class="control-label">Select date and time from:</label>
+                      <input id="date_from_nup" class="form-control col-md-3" name="date_from_nup" type="text" readonly required>
+                    </div>
+                    <div class="form-group">
+                      <label for="date_end_nup" class="control-label">Select date and time to:</label>
+                      <input id="date_end_nup" class="form-control col-md-3" name="date_end_nup" type="text" readonly  required>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="date_from_wed" class="control-label">Select date and time from:</label>
+                      <input id="date_from_wed" class="form-control col-md-3" name="date_from_wed" type="text" readonly required>
+                    </div>
+                    <div class="form-group">
+                      <label for="date_end_wed" class="control-label">Select date and time to:</label>
+                      <input id="date_end_wed" class="form-control col-md-3" name="date_end_wed" type="text" readonly  required>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="row">
+                <div class="form-group col-md-12">
+                  <label for="desc" class="control-label">Description:</label>
+                  <textarea id="desc" name="desc" class="form-control" rows="10" cols="80" required></textarea>
+                </div>
               </div>
 
-            </div>
-            
-            <div id="other_occasion">
-              <div class="form-group col-md-4">
-                <label for="other" class="control-label">Other occasion name:</label>
-                <input id="other" class="form-control col-md-3" name="other" type="text" placeholder="Please specify ...">
-              </div>
-            </div>
-            
-            <div id="date_normal" class="col-md-12">
-              <div class="row">
-                <div class="form-group col-md-6">
-                  <label for="date_from" class="control-label">Select date and time from:</label>
-                  <input id="date_from" class="form-control col-md-3" name="date_from" type="text" readonly required>
-                </div>
-                <div class="form-group col-md-6">
-                  <label for="date_end" class="control-label">Select date and time to:</label>
-                  <input id="date_end" class="form-control col-md-3" name="date_end" type="text" readonly  required>
-                </div>
-              </div>
-            </div>
-            
-            <div id="date_wedding" class="col-md-12">
-              <div class="row">
-                <div class="col-md-6">
-                  <h3>Nuptial</h3>
-                </div>
-                <div class="col-md-6">
-                  <h3>Wedding</h3>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label for="date_from_nup" class="control-label">Select date and time from:</label>
-                    <input id="date_from_nup" class="form-control col-md-3" name="date_from_nup" type="text" readonly required>
-                  </div>
-                  <div class="form-group">
-                    <label for="date_end_nup" class="control-label">Select date and time to:</label>
-                    <input id="date_end_nup" class="form-control col-md-3" name="date_end_nup" type="text" readonly  required>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label for="date_from_wed" class="control-label">Select date and time from:</label>
-                    <input id="date_from_wed" class="form-control col-md-3" name="date_from_wed" type="text" readonly required>
-                  </div>
-                  <div class="form-group">
-                    <label for="date_end_wed" class="control-label">Select date and time to:</label>
-                    <input id="date_end_wed" class="form-control col-md-3" name="date_end_wed" type="text" readonly  required>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <div class="row col-md-12">
-              <div class="form-group col-md-6">
-                <label for="desc" class="control-label">Description:</label>
-                <textarea id="desc" name="desc" class="form-control" rows="10" cols="80" required></textarea>
-              </div>
-            </div>
-            
-            <div class="row col-md-12">
-              <div class="form-group col-md-3">
-                <button id="send-btn" type="submit" name="submit" class="btn btn-primary">Save event</button>
-              </div>
             </div>
 
           </div>
 
-        </div>
-
-      </form>
+      </div>
+      
+    </div> <!-- row -->
+              
+    <div class="row">
+      <div class="form-group col-md-12 text-right">
+        <button id="send-btn" type="submit" name="submit" class="btn btn-primary">Save event</button>
+      </div>
     </div>
-    
-  </div> <!-- row -->
+  </form>
 </div> <!-- container -->
 
 <!-- Modal -->

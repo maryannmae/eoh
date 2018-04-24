@@ -26,7 +26,9 @@
   </div>
 </footer><!--/#footer-->
 
-<script src="js/jquery-3.3.1.js"></script>
+<!-- <script src="js/jquery-3.3.1.js"></script> -->
+<!-- <script src="js/jquery-1.11.1.js"></script> -->
+<script src="js/jquery.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script src="js/jquery.prettyPhoto.js"></script>
 <script src="js/jquery.isotope.min.js"></script>
@@ -39,31 +41,26 @@
 <!--<script src="js/jquery.prettyPhoto.js"></script>-->
 <script src="admin/js/bootstrap-datetimepicker.js"></script>
 <script src="js/alertify.js"></script>
+<script src="js/jquery.serializeToJSON.js"></script>
 <script src="js/main.js"></script>
 <script>
   $(document).ready(function () {
     <?php
-      if (!isset($_SESSION['logged_in']) && $_SERVER['PHP_SELF'] == '/booking.php') {  
+      if (!isset($_SESSION['logged_in'])) {  
     ?>
-        alertify
-                .okBtn("Login")
-                .cancelBtn("Register")
-                .confirm("You must login first in order to view this page, create an account if you don\'t have one.", function () {
-            // user clicked "login"
-            window.location = 'login.php'
-        }, function() {
-            // user clicked "register"
-            window.location = 'register.php'
-        })
-        $('.alertify .dialog div').css({
-          'background':'#436E90'
-        })
-        $('.alertify .dialog div .msg').css({
-          'color':'#fff'
-        })
-        $('.alertify .dialog div nav button').css({
-          'color':'#fff',
-          'border':'1px solid rgba(0,0,0,0.2)'
+        $('#booking-link').on('click',function(e){
+          e.preventDefault()
+          alertify.alert("You must login first in order to view this page, create an account if you don\'t have one.")
+          $('.alertify .dialog div').css({
+            'background':'#436E90'
+          })
+          $('.alertify .dialog div .msg').css({
+            'color':'#fff'
+          })
+          $('.alertify .dialog div nav button').css({
+            'color':'#fff',
+            'border':'1px solid rgba(0,0,0,0.2)'
+          })
         })
     <?php
       }
@@ -73,7 +70,7 @@
   $(document).ready(function () {
     let theForm = $('#formAddEvent')
     theForm.on('submit',function(e){
-      // e.preventDefault()
+      e.preventDefault()
       let msg = ''
       let ev_cat = $('#event_category').val()
       let other = $('#other').val()
@@ -85,7 +82,18 @@
       let date_to_wed = $('#date_end_wed').val()
       let desc = $('#desc').val()
       if (ev_cat == 'Weddings') {
-
+        if (date_from_nup == '') {
+          msg += 'Please input Nuptial date from<br>'
+        }
+        if (date_to_nup == '') {
+          msg += 'Please input Nuptial date to<br>'
+        }
+        if (date_from_wed == '') {
+          msg += 'Please input Wedding date from<br>'
+        }
+        if (date_to_wed == '') {
+          msg += 'Please input Wedding date to<br>'
+        }
       } else if (ev_cat == 'Other Occasions') {
         if (other == '') {
           msg += 'Please specify other occation name<br>'
@@ -105,9 +113,18 @@
         }
       }
       if (msg == '') {
-        // Submit the form
+        let data = theForm.serializeToJSON()
+        $.post('_includes/add_event.php',data,function(data){
+          if (data == 'SUCCESS') {
+            alert('Successfully added an event')
+            window.location = 'booking.php'
+          } else if (data == 'OCCUPIED') {
+            alertify.alert('The selected dates are already occupied. Please choose another date or time.')
+          } else {
+            console.log(data)
+          }
+        })
       } else {
-        e.preventDefault()
         alertify.alert(msg)
         $('.msg').css('color','red')
         msg = ''
@@ -118,9 +135,13 @@
     var other_occasion = $('#other_occasion');
     var date_normal = $('#date_normal');
     var date_wedding = $('#date_wedding');
+    var wedding_albums = $('#wedding-albums')
+    var bday_albums = $('#bday-albums')
     pkgs.hide();
     other_occasion.hide();
     date_wedding.hide();
+    wedding_albums.hide();
+    bday_albums.hide();
 
     $('#full-calendar').fullCalendar({
       events: [
@@ -228,19 +249,101 @@
         pkgs.show();
         other_occasion.hide();
         date_wedding.show();
+        wedding_albums.show();
+        bday_albums.hide();
         date_normal.hide();
       } else if (category == 'Other Occasions') {
         pkgs.hide();
         other_occasion.show();
         date_wedding.hide();
+        wedding_albums.hide();
+        bday_albums.hide();
+        date_normal.show();
+      } else if (category == 'Birthday') {
+        pkgs.hide();
+        other_occasion.hide();
+        date_wedding.hide();
+        wedding_albums.hide();
+        bday_albums.show();
         date_normal.show();
       } else {
         pkgs.hide();
         other_occasion.hide();
         date_wedding.hide();
+        wedding_albums.hide();
+        bday_albums.hide();
         date_normal.show();
       }
     })
+
+    // toggle disabled on wedding design link input
+    $('input[name="wed_album"]').on('change',function(){
+      let link = $(this)
+      let link_input = $('#wed_album5_text')
+      if (link.val() == 'Design 5') {
+        link_input.prop('disabled', false)
+      } else {
+        link_input.val('')
+        link_input.prop('disabled', true)
+      }
+    })
+
+    // toggle disabled on bday design link input
+    $('input[name="bday_album"]').on('change',function(){
+      let link = $(this)
+      let link_input = $('#bday_album5_text')
+      if (link.val() == 'Design 5') {
+        link_input.prop('disabled', false)
+      } else {
+        link_input.val('')
+        link_input.prop('disabled', true)
+      }
+    })
+
+    function toggleLinks(elem,radio,other_input) {
+      let link_input = $(other_input)
+      $(elem).on('change',function(){
+        let check_box = $(this)
+        let radios = $(radio)
+        if (check_box.is(':checked')) {
+          radios.prop('disabled', false)
+        } else {
+          link_input.val('')
+          link_input.prop('disabled', true)
+          radios.prop('checked', false)
+          radios.prop('disabled', true)
+        }
+      })
+    }
+
+    function toggleOtherLinks(links,other_input) {
+      $(links).on('change',function(){
+        let link = $(this)
+        let link_input = $(other_input)
+        if (link.val() == 'Other') {
+          link_input.prop('disabled', false)
+        } else {
+          link_input.val('')
+          link_input.prop('disabled', true)
+        }
+      })
+    }
+
+    // toggle Make-up Artists links
+    toggleLinks('#link_m','input[name="link_m_items"]','#other_m')
+    toggleOtherLinks('input[name="link_m_items"]','#other_m')
+
+    // toggle Catering Services links
+    toggleLinks('#link_c','input[name="link_c_items"]','#other_c')
+    toggleOtherLinks('input[name="link_c_items"]','#other_c')
+
+    // toggle Sound Systems links
+    toggleLinks('#link_s','input[name="link_s_items"]','#other_s')
+    toggleOtherLinks('input[name="link_s_items"]','#other_s')
+
+    // toggle Floral Services links
+    toggleLinks('#link_f','input[name="link_f_items"]','#other_f') 
+    toggleOtherLinks('input[name="link_f_items"]','#other_f')
 
   });
 </script>
